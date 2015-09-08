@@ -21,5 +21,6 @@ Navigate to the cloned location on your system, and run as follows:
 $ python3 cipher.py
 ```
 
+## Acknowledgements
 
 Written from material learned in ICS 423 taught by Prof. Pavlovic, Fall 2015 at the University of Hawaii at Manoa
