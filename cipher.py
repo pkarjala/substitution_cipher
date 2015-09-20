@@ -5,11 +5,12 @@
 # Imports
 import re
 
-# Letters
-letters = "abcdefghijklmnopqrstuvwxyz"
+# LETTERS
+LETTERS = "abcdefghijklmnopqrstuvwxyz"
 
 # Character map
-mydict = { letters[i]:i for i in range(len(letters)) }
+MYDICT = { LETTERS[i]:i for i in range(len(LETTERS)) }
+
 
 def get_key(): # NOTE:  Does not check if character is a letter.
     print("\nPlease enter your key as a letter; i.e., a = b")
@@ -18,19 +19,47 @@ def get_key(): # NOTE:  Does not check if character is a letter.
         print("\nKey length is greater than one letter; please", 
                 "enter a single character key:")
         key = input("> ")
-    return mydict[key]
+    return MYDICT[key]
 
-# clean_text
-# PAK 20150919
-# Remove all non-alphabetic characters, spaces, and other puncutation from text.
-# @param text The Text to be cleaned.
-# @return A string of characters {a...z} in lowercase
-def clean_text( text ):
+
+def clean_text( text, keep_chars ):
+    """Cleans a string of all characters not in a provided list.
+
+    Takes the passed in string and translates it to lowercase, then removes
+    all characters from the original string that are not also in the provided
+    string keep_chars.
+
+    Args:
+        text: The text string to be cleaned.
+        keep_chars: A string of the characters to keep.
+
+    Returns:
+        The original in-order string, stripped of all characters
+            not in keep_chars.
+    """
     cleantext = ''
     for character in text:
-        if mydict[character] :
+        if character in keep_chars:
             cleantext += character
     return cleantext
+
+
+
+def shift_cipher(key, text):
+    ciphertext = ''
+    if key in MYDICT:
+        key = MYDICT[key]
+    print key
+    message = clean_text(text, LETTERS)
+    for character in message:
+        encoded_text = MYDICT[character]
+        encrypted_text = (encoded_text + key) % 26
+        ciphertext += LETTERS[encrypted_text]
+    # encoded_message = [MYDICT[i] for i in message]
+    # encrypted_text = [(encoded_message[i] + key) % 26 for i in range(len(encoded_message))]
+    # ciphertext = [LETTERS[i] for i in encrypted_text]
+    return ciphertext
+
 
 
 def mono_cipher(message, encode_or_decode):
@@ -39,20 +68,18 @@ def mono_cipher(message, encode_or_decode):
     message = message.lower()
     if encode_or_decode == 1:
         for character in message:
-            encoded_text = mydict[character]
+            encoded_text = MYDICT[character]
             encrypted_text = (encoded_text + key) % 26
-            cyphertext += letters[encrypted_text]
+            cyphertext += LETTERS[encrypted_text]
         return cyphertext.upper()
     elif encode_or_decode == 2:
         for character in message:
-            encoded_text = mydict[character]
+            encoded_text = MYDICT[character]
             decrypted_text = (encoded_text - key) % 26
-            messagetext += letters[decrypted_text]
+            messagetext += LETTERS[decrypted_text]
         return messagetext.lower()
 
-def monoalpha_encode(message):
-    ciphertext = ''
-    message = clean_text(message)
+
 
 print("\n\nPlease select a Substitution Cipher to use:")
 
