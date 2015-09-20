@@ -5,12 +5,11 @@
 # Imports
 import re
 
+# Letters
+letters = "abcdefghijklmnopqrstuvwxyz"
+
 # Character map
-char_map = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 
-             'i': 8, 'j': 9, 'k': 10, 'l': 11, 'm': 12, 'n': 13, 'o': 14, 
-             'p': 15, 'q': 16, 'r': 17, 's': 18, 't': 19, 'u': 20, 'v': 21, 
-             'w': 22, 'x': 23, 'y': 24, 'z': 25}
-rev_map = dict(zip(char_map.values(), char_map.keys()))
+mydict = { letters[i]:i for i in range(len(letters)) }
 
 def get_key(): # NOTE:  Does not check if character is a letter.
     print("\nPlease enter your key as a letter; i.e., a = b")
@@ -19,7 +18,20 @@ def get_key(): # NOTE:  Does not check if character is a letter.
         print("\nKey length is greater than one letter; please", 
                 "enter a single character key:")
         key = input("> ")
-    return char_map[key]
+    return mydict[key]
+
+# clean_text
+# PAK 20150919
+# Remove all non-alphabetic characters, spaces, and other puncutation from text.
+# @param text The Text to be cleaned.
+# @return A string of characters {a...z} in lowercase
+def clean_text( text ):
+    cleantext = ''
+    for character in text:
+        if mydict[character] :
+            cleantext += character
+    return cleantext
+
 
 def mono_cipher(message, encode_or_decode):
     cyphertext = ''
@@ -27,16 +39,20 @@ def mono_cipher(message, encode_or_decode):
     message = message.lower()
     if encode_or_decode == 1:
         for character in message:
-            encoded_text = char_map[character]
+            encoded_text = mydict[character]
             encrypted_text = (encoded_text + key) % 26
-            cyphertext += rev_map[encrypted_text]
+            cyphertext += letters[encrypted_text]
         return cyphertext.upper()
     elif encode_or_decode == 2:
         for character in message:
-            encoded_text = char_map[character]
+            encoded_text = mydict[character]
             decrypted_text = (encoded_text - key) % 26
-            messagetext += rev_map[decrypted_text]
+            messagetext += letters[decrypted_text]
         return messagetext.lower()
+
+def monoalpha_encode(message):
+    ciphertext = ''
+    message = clean_text(message)
 
 print("\n\nPlease select a Substitution Cipher to use:")
 
