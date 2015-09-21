@@ -2,24 +2,31 @@
 # Requires Python 3.x
 # It uses Z = 26, or the Roman Alphabet for character input.
 
-# Imports
-import re
-
 # LETTERS
 LETTERS = "abcdefghijklmnopqrstuvwxyz"
 
-# Character map
+# Character map of letters to number
 MYDICT = { LETTERS[i]:i for i in range(len(LETTERS)) }
 
 
-def get_key(): # NOTE:  Does not check if character is a letter.
+def get_key():
+    """ Gets a key from the user.
+
+    Key must be of a length of only one character.
+
+    Args:
+        none
+
+    Returns:
+        The key input by the user.
+    """
     print("\nPlease enter your key as a letter; i.e., a = b")
     key = input("> ")
     while len(key) > 1:
         print("\nKey length is greater than one letter; please", 
                 "enter a single character key:")
         key = input("> ")
-    return MYDICT[key]
+    return key
 
 
 def clean_text( text, keep_chars ):
@@ -38,46 +45,124 @@ def clean_text( text, keep_chars ):
             not in keep_chars.
     """
     cleantext = ''
+    text = text.lower()
     for character in text:
         if character in keep_chars:
             cleantext += character
     return cleantext
 
 
+def translate_key(key, mapping):
+    """Translates a key from a character to an integer.
+
+
+    Args:
+        key:  The key to translate.
+
+    Returns:
+        The key as an integer.
+
+    """
+    if key in mapping:
+        key = mapping[key]
+    print(key)
+    return key
+
 
 def shift_cipher(key, text):
+    """Performs shift cipher on a string based off of a key provided.
+
+    Performs a shift cipher, key + text % 26 to encipher.
+
+    Args:
+        key:  The key to shift the text over by.  May be either the text of the
+            letter or the number of the letter.
+        text:  The plaintext to encipher.  Will be stripped of non-alphabetic
+            characters before being enciphered.
+
+    Returns:
+        The enciphered plaintext
+
+    """
     ciphertext = ''
-    if key in MYDICT:
-        key = MYDICT[key]
-    print key
+    key = translate_key(key, MYDICT)
     message = clean_text(text, LETTERS)
     for character in message:
         encoded_text = MYDICT[character]
         encrypted_text = (encoded_text + key) % 26
         ciphertext += LETTERS[encrypted_text]
-    # encoded_message = [MYDICT[i] for i in message]
-    # encrypted_text = [(encoded_message[i] + key) % 26 for i in range(len(encoded_message))]
-    # ciphertext = [LETTERS[i] for i in encrypted_text]
     return ciphertext
 
 
+def shift_decipher(key, text):
+    """Performs shift decipher on a string based off of a key provided.
 
-def mono_cipher(message, encode_or_decode):
-    cyphertext = ''
-    messagetext = ''
-    message = message.lower()
-    if encode_or_decode == 1:
-        for character in message:
-            encoded_text = MYDICT[character]
-            encrypted_text = (encoded_text + key) % 26
-            cyphertext += LETTERS[encrypted_text]
-        return cyphertext.upper()
-    elif encode_or_decode == 2:
-        for character in message:
-            encoded_text = MYDICT[character]
-            decrypted_text = (encoded_text - key) % 26
-            messagetext += LETTERS[decrypted_text]
-        return messagetext.lower()
+    Performs a shift decipher, key - text % 26 to decipher the enciphered text.
+
+    Args:
+        key:  The key to shift the text over by.  May be either the text of the
+            letter or the number of the letter.
+        text:  The ciphertext to decipher.  Will be stripped of non-alphabetic
+            characters before being deciphered.
+
+    Returns:
+        The deciphered plaintext
+
+    """
+    plaintext = ''
+    key = translate_key(key, MYDICT)
+    ciphertext = clean_text(text, LETTERS)
+    for character in ciphertext:
+        encrypted_text = MYDICT[character]
+        encoded_text = (encrypted_text - key) % 26
+        plaintext += LETTERS[encoded_text]
+    return plaintext
+
+
+def affine_cipher(key, text):
+    ciphertext = ''
+    a = translate_key(key[0], MYDICT)
+    b = translate_key(key[1], MYDICT)
+    message = clean_text(text, LETTERS)
+    for character in message:
+        encoded_text = MYDICT[character]
+        encrypted_text = (encoded_text * a + b) % 26
+        ciphertext += LETTERS[encrypted_text]
+    return ciphertext
+
+def affine_decipher(key, text):
+    plaintext = ''
+    kfor part in key:
+        key[part] = translate_key(part, MYDICT)
+    ciphertext = clean_text(text, LETTERS)
+    for character in ciphertext:
+        encrypted_text = MYDICT[character]
+        encoded_text = (encrypted_text - key) % 26
+        plaintext += LETTERS[encoded_text]
+    return plaintext
+
+
+def choose_encipher_decipher(key, key2, message, cipher_type, encrypt_or_decrypt):
+    """ Determines which cipher to run, and whether to encrypt or decrypt.
+
+    Args:
+        key:  The key to use for enciphering or deciphering.
+        message:  The message to encipher or decipher.
+        cipher_type: Type of algorithmn to use.
+        encrypt_or_decrypt:  Whether to perform encryption or decryption.
+            Encryption = 1, Decrpytion = 2.
+
+    Return:
+        The result of either eciphering or deciphering.
+    """
+    if cipher_type == "shift" and encrypt_or_decrypt == 1 :
+        result = shift_cipher(key, message)
+        return result
+    elif cipher_type == "shift" and encrypt_or_decrypt == 2 :
+        result = shift_decipher(key, message)
+        return result
+    elif cipher_type == "affine" and encrypt_or_decrypt == 1 :
+
 
 
 
@@ -89,14 +174,13 @@ if cipher_type == 1:
     print("\nMonoalphabetic cipher chosen.\n")
     repeat = True
     while repeat:
-        encode_or_decode = int(input("Encipher [1] or Decipher [2] \n> "))
+        en_or_de = int(input("Encipher [1] or Decipher [2] \n> "))
         key = get_key()
         print("\nKey is " + str(key))
-        print("\nPlease enter your message to be encrypted:") if encode_or_decode == 1 else print("\nPlease enter your message to be decrypted:")
+        print("\nPlease enter your message to be encrypted:") if en_or_de == 1 else print("\nPlease enter your message to be decrypted:")
         message = input("> ")
-        message = re.sub(r'\s+', '', message)
-        result = mono_cipher( message, encode_or_decode )
-        print("\nEncrypted message is: " + result) if encode_or_decode == 1 else print("\nDecrypted message is: " + result)
+        result = choose_encipher_decipher(key, message, "shift", en_or_de )
+        print("\nEncrypted message is: " + result) if en_or_de == 1 else print("\nDecrypted message is: " + result)
 
         # To be broken out into separate management function
         print("\nDo you wish to perform another Monoalphabetic cipher task?")
