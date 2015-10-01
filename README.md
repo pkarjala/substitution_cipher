@@ -1,6 +1,6 @@
 # substitution_cipher
 
-A practice in implementing Substitution Ciphers in Python
+A practice in implementing Substitution Ciphers in Python & Ruby
 
 This program is an implementation of the following ciphers:
 
@@ -10,7 +10,7 @@ This program is an implementation of the following ciphers:
 
 ## Requirements
 
-Requires Python 3.x to run.
+Requires Python 3.x to run the Python implementations, Ruby 2.x to run the Ruby implementations.
 
 ## To Use
 
