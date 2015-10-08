@@ -11,14 +11,14 @@ MY_DICT = Hash.new
 LETTERS.each_char.with_index { |character, index| MY_DICT[character] = index }
 
 
-=begin
-Clean all non-alphabetic characters from a string that are not in a provided list.
 
-text - the original user-input text
-keepchars - the string of characters that should be kept
-
-Returns the full list of the character list.
-=end
+# Clean all non-alphabetic characters from a string that are not in a provided list.
+#
+# @param text [String] The original user-input text.
+# @param keepchars [String] The string of characters that should be kept.
+#
+# @return [String] The original text cleaned of all characters not in keepchars,
+#   and in lowercase.
 def clean_text(text, keepchars)
   cleaned_text = ''
   text.each_char { |character| cleaned_text += character if keepchars.include? character }
@@ -27,35 +27,35 @@ def clean_text(text, keepchars)
 end
 
 
-=begin
-Translates an input key string to an integer array
-
-key - the key, either a single character or string, to translate
-mapping - the character to number hash
-=end 
+# Translates an input key string to an integer array
+#
+# @param key [String] The key, either a single character or string, to translate.
+# @param mapping [Map] The character to number hash table.
+#
+# @return [Array] The key array as integers.
 def translate_key(key, mapping)
   int_key = Array.new
-  key.each_char do |char|
-    if mapping.key?(char)
-      int_key << mapping[char]
+  key.each_char do |character|
+    if mapping.key?(character)
+      int_key << mapping[character]
     end
   end
   return int_key
 end
 
 
-# Shift Cipher
+# Performs shift cipher against any length key.
+#
+# @param key [String] the key, in plain text, of any length.
+# @param text [String] the plaintext, of any length, inclusive of incorrect characters.
+#
+# @return [String] Returns the encrypted ciphertext.
 def shift_cipher(key, text)
   ciphertext = ''
-  encoded_text = Array.new
+  encoded_text = ''
   key = translate_key(key, MY_DICT)
   message = clean_text(text, LETTERS)
-  #puts message
-  puts "Translated key is #{key}"
-  puts "Key length is #{key.length}"
   message.each_char.with_index do |character, index|
-    puts "Index is #{index}"
-    puts "Key index is: " + (index % key.length).to_s
     encoded_text = MY_DICT[character]
     encrypted_text = (encoded_text + key[index % key.length]) % 26
     ciphertext += LETTERS[encrypted_text]
@@ -63,18 +63,23 @@ def shift_cipher(key, text)
   return ciphertext
 end
 
-# Substitution cipher
+# Performs shift decipher against any length key.
+#
+# @param key [String] the key, in plain text, of any length.
+# @param text [String] the ciphertext, of any length.
+#
+# @return [String] Returns the decrypted plaintext.
+def shift_decipher(key, text)
+  plaintext = ''
+  encoded_text = ''
+  key = translate_key(key, MY_DICT)
+  ciphertext = clean_text(text, LETTERS)
+  ciphertext.each_char.with_index do |character, index|
+    encoded_text = MY_DICT[character]
+    encrypted_text = (encoded_text - key[index % key.length]) % 26
+    plaintext += LETTERS[encrypted_text]
+  end
+  return plaintext
+end
 
-puts "Please provide some text: "
-user_text = gets.chomp
-#user_text.each_char { |character| puts MY_DICT[character] }
-#user_text = clean_text(user_text, LETTERS)
-puts "Text is: #{user_text}"
-
-puts "Please provide a key: "
-user_key = gets.chomp
-#user_key = translate_key(user_key, MY_DICT)
-puts "Key is: #{user_key}"
-
-puts "The enciphered text is: " + shift_cipher(user_key, user_text)
 
