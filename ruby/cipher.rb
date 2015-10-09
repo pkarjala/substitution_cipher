@@ -149,17 +149,17 @@ end
 def affine_decipher(key1, key2, text)
   plaintext = ''
   encrypted_text = ''
-  a1 = ''
+  a1 = Array.new
   a = translate_key(key1, MY_DICT)
   b = translate_key(key2, MY_DICT)
   a.each do |value|
     gcd = extended_euclidian_algorithm(26, value)
-    a1 = gcd[2] % 26
+    a1 << gcd[2] % 26
   end
   ciphertext = clean_text(text, LETTERS)
   ciphertext.each_char.with_index do |character, index|
     encrypted_text = MY_DICT[character]
-    encoded_text = (encrypted_text * a1 - a1*b[index % b.length]) % 26
+    encoded_text = (encrypted_text * a1[index % a1.length] - a1[index % a1.length]*b[index % b.length]) % 26
     plaintext += LETTERS[encoded_text]
   end
   return plaintext

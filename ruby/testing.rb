@@ -17,11 +17,15 @@ user_key2 = gets.chomp
 #user_key = translate_key(user_key, MY_DICT)
 puts "Key is: #{user_key2}"
 
-deciphertext = affine_decipher(user_key1, user_key2, user_text)
+
+
+ciphertext = affine_cipher(user_key1, user_key2, user_text)
+
+deciphertext = affine_decipher(user_key1, user_key2, ciphertext)
 
 #ciphertext = shift_cipher(user_key1, user_text)
 
-# puts "The enciphered text is: " + ciphertext
+puts "The enciphered text is: " + ciphertext
 
 puts "The deciphered text is: " + deciphertext
 
