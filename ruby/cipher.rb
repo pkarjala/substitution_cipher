@@ -20,9 +20,9 @@ LETTERS.each_char.with_index { |character, index| MY_DICT[character] = index }
 # @return [String] The original text cleaned of all characters not in keepchars,
 #   and in lowercase.
 def clean_text(text, keepchars)
+  text.downcase!
   cleaned_text = ''
   text.each_char { |character| cleaned_text += character if keepchars.include? character }
-  cleaned_text.downcase!
   return cleaned_text
 end
 
@@ -122,8 +122,10 @@ end
 # 
 # Calculates A * m + B % 26
 #
-# @param key1 [String] The first part of the key A
-# @param key2 [String] The second part of the key B
+# @param key1 [String] The first part of the key A.
+# @param key2 [String] The second part of the key B.
+#
+# @return [String} The enciphered text string.
 def affine_cipher(key1, key2, text)
   ciphertext = ''
   encoded_text = ''
@@ -143,9 +145,10 @@ end
 # 
 # Calculates 1/A * (c - B) % 26
 #
-# @param key1 [String] The first part of the key A
-# @param key2 [String] The second part of the key B
-# NOTE:  Needs to be fixed to function with arrays for the a1 value
+# @param key1 [String] The first part of the key A.
+# @param key2 [String] The second part of the key B.
+#
+# @return [String] The deciphered text string.
 def affine_decipher(key1, key2, text)
   plaintext = ''
   encrypted_text = ''
@@ -166,6 +169,26 @@ def affine_decipher(key1, key2, text)
 end
 
 
-
-
+# Performs a frequency analysis on a provided string of characters.
+#
+# Calculates the relative frequency of each character in the overall string.
+#
+# @param text [string] The unaltered string to count characters of.
+#
+# @return [Map] The mapping of the frequency of each character.
+def frequency_analysis(text)
+  frequency_table = {}
+  for key in 'a'..'z' do 
+    frequency_table[key] = 0
+  end
+  text = clean_text(text, LETTERS)
+  text.each_char do |character|
+    frequency_table[character] += 1
+  end
+  relative_frequency = {}
+  frequency_table.each { |key, value| 
+    relative_frequency[key] = (value * 100.0) / text.length
+  }
+  return relative_frequency
+end
 
