@@ -29,16 +29,18 @@ end
 
 # Translates an input key string to an integer array
 #
-# @param key [String] The key, either a single character or string, to translate.
+# @param key [Array] The key, either a single character or string, to translate.
 # @param mapping [Map] The character to number hash table.
 #
 # @return [Array] The key array as integers.
 # NOTE:  Chokes on plain integer input; test.
 def translate_key(key, mapping)
   int_key = Array.new
-  key.each_char do |character|
-    if mapping.key?(character)
-      int_key << mapping[character]
+  key.each do |item|
+    if mapping.key?(item)
+      int_key << mapping[item]
+    else
+      int_key << item
     end
   end
   return int_key
@@ -47,7 +49,7 @@ end
 
 # Performs Shift Cipher against any key length >= 1.
 #
-# @param key [String] the key, in plain text, of any length.
+# @param key [Array] the key as an array of any combination of integers and characters.
 # @param text [String] the plaintext, of any length, inclusive of incorrect characters.
 #
 # @return [String] Returns the encrypted ciphertext.
@@ -66,7 +68,7 @@ end
 
 # Performs Shift Decipher against any key length >= 1.
 #
-# @param key [String] the key, in plain text, of any length.
+# @param key [Array] the key as an array of any combination of integers and characters.
 # @param text [String] the ciphertext, of any length.
 #
 # @return [String] Returns the decrypted plaintext.
@@ -122,8 +124,10 @@ end
 # 
 # Calculates A * m + B % 26
 #
-# @param key1 [String] The first part of the key A.
-# @param key2 [String] The second part of the key B.
+# @param key1 [Array] The first part of the key A as an array of any combination 
+#   of integers and characters.
+# @param key2 [String] The second part of the key B as an array of any combination 
+#   of integers and characters.
 #
 # @return [String} The enciphered text string.
 def affine_cipher(key1, key2, text)
@@ -145,8 +149,10 @@ end
 # 
 # Calculates 1/A * (c - B) % 26
 #
-# @param key1 [String] The first part of the key A.
-# @param key2 [String] The second part of the key B.
+# @param key1 [Array] The first part of the key A as an array of any combination 
+#   of integers and characters.
+# @param key2 [String] The second part of the key B as an array of any combination 
+#   of integers and characters.
 #
 # @return [String] The deciphered text string.
 def affine_decipher(key1, key2, text)
@@ -173,9 +179,9 @@ end
 #
 # Calculates the relative frequency of each character in the overall string.
 #
-# @param text [string] The unaltered string to count characters of.
+# @param text [String] The unaltered string to count characters of.
 #
-# @return [Map] The mapping of the frequency of each character.
+# @return [Array] The mapping of the frequency of each character.
 def frequency_analysis(text)
   frequency_table = {}
   for key in 'a'..'z' do 
@@ -189,6 +195,32 @@ def frequency_analysis(text)
   frequency_table.each { |key, value| 
     relative_frequency[key] = (value * 100.0) / text.length
   }
-  return relative_frequency
+  result = relative_frequency.sort_by { |_key, value| value }
+  result.reverse!
+  return result
 end
 
+
+# Decodes a message based on any partial provision of mappings
+#
+# @param text [String] The message to be deciphered.
+# @param mapping [Hash] A mapping of any number or characters in Z26 to Z26
+#
+# @return [String] The text of deciphered characters, with "_" for any characters
+#   not deciphered.  Any non {a..z} letters are simply passed through.
+def decode_mapping(text, mapping)
+  result_text = ''
+  text.downcase!
+  text.each_char do |character|
+    if mapping.key?(character)
+      result_text << mapping[character]
+    else
+      if LETTERS.include? character
+        result_text << "_"
+      else
+        result_text << character
+      end
+    end
+  end
+  return result_text
+end
