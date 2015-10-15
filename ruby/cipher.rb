@@ -29,21 +29,13 @@ end
 
 # Translates an input key string to an integer array
 #
-# @param key [Array] The key, either a single character or string, to translate.
+# @param key [Array] The key as an array of any combination of single characters and numbers.
 # @param mapping [Map] The character to number hash table.
 #
 # @return [Array] The key array as integers.
 # NOTE:  Chokes on plain integer input; test.
 def translate_key(key, mapping)
-  int_key = Array.new
-  key.each do |item|
-    if mapping.key?(item)
-      int_key << mapping[item]
-    else
-      int_key << item
-    end
-  end
-  return int_key
+  return key.collect { |item| mapping.key?(item) ? mapping[item] : item }
 end
 
 

@@ -18,9 +18,13 @@ Requires Python 3.x to run the Python implementations, Ruby 2.x to run the Ruby 
 ## To Use
 
 Clone this repoistory to your machine.  
-Navigate to the cloned location on your system, and examine the cipher.* file.
+Navigate to the cloned location on your system.
+Choose the `python` directory for the Python implementation, or the `ruby` directory for the Ruby implemtnation.
+Examine the cipher.* file in your language's directory to see what each function does.
 
-Create your test case in the testing.* file and run as follows:
+See examples in the testing.* file for your language.
+
+Add your own calculation and run as follows:
 
 ### Python:
 ```
