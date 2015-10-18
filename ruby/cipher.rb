@@ -167,6 +167,13 @@ def affine_decipher(key1, key2, text)
 end
 
 
+# Performs a Playfair Cipher encryption given a 2 dimensional array as the key
+#
+#
+# @param key [Array] The two dimensional array of the key, of any size.
+# @param text [String] The plaintet of the message to be encrypted.
+#
+# @return [String] The enciphere text string.
 def playfair_cipher(key, text)
   ciphertext = ''
   encoded_text = ''
@@ -194,20 +201,13 @@ def playfair_cipher(key, text)
   key_positions = Hash.new
   value = ''
   x = key.length
-  # puts x
   y = key[0].length
-  # puts y
   for i in 0...x  
     for j in 0...y
       key_positions[key[i][j]] = [i, j]
     end
   end
-
-  # puts key_positions
-
-  #puts key_positions
   # Encipher the input text
-
   (0...encoded_text.length).step(2) do |k|
     index1 = key_positions[encoded_text[k]]
     index2 = key_positions[encoded_text[k+1]]
@@ -215,13 +215,6 @@ def playfair_cipher(key, text)
     if index1[0] == index2[0]
       ciphertext << key[index1[0]][(index1[1]+1) % y]
       ciphertext << key[index2[0]][(index2[1]+1) % y]
-      # print index1[0]
-      # print ","
-      # puts (index1[1]+1) % y
-
-      # print index2[0]
-      # print ","
-      # puts (index2[1]+1) % y
     # check for matching column
     elsif index1[1] == index2[1]
       ciphertext << key[(index1[0]+1) % x][index1[1]]
@@ -231,36 +224,38 @@ def playfair_cipher(key, text)
     else
       ciphertext << key[index1[0]][index2[1]]
       ciphertext << key[index2[0]][index1[1]]
-      # print index1[0]
-      # print ","
-      # puts index2[1]
-
-      # print index2[0]
-      # print ","
-      # puts index1[1]
     end
-    
-    
-    # print index1
-    # print ","
-    # print index2
-    # print key[index1[0]][index1[1]+1]
-    # puts " "
   end
   return ciphertext
-
-  # mapping = encoded_text.scan(/.{1,2}/)
-  # for mapping.each { |pair|
-  #   for 0..5 { |x| 
-  #     for 0..5 { |y| 
-  #       if pair[0] ==
-  #     }
-  #   }
-  # }
-
 end
 
 
+def playfair_decipher(key, text)
+
+  plaintext = ''
+
+  # Create hashmap for each character in array (faster to do once than searching multiple times)
+  key_positions = Hash.new
+  value = ''
+  x = key.length
+  y = key[0].length
+  for i in 0...x  
+    for j in 0...y
+      key_positions[key[i][j]] = [i, j]
+    end
+  end
+
+  (0...text.length).step(2) do |k|
+    index1 = key_positions[encoded_text[k]]
+    index2 = key_positions[encoded_text[k+1]]
+    # check for matching row
+    if index1[0] == index2[0]
+      plaintext << key[index1[0]][(index1[1]-1) % y]
+      plaintext << key[index2[0]][(index2[1]-1) % y]
+    # check for matching column
+    elsif index1[1] == index2[1]
+
+end
 
 
 # Performs a frequency analysis on a provided string of characters.
