@@ -167,6 +167,102 @@ def affine_decipher(key1, key2, text)
 end
 
 
+def playfair_cipher(key, text)
+  ciphertext = ''
+  encoded_text = ''
+
+  # Clean input text
+  cleantext = clean_text(text, LETTERS)
+
+  # Split our message into character pairs and insert "x" wherever there are repeated characters
+  temp = cleantext.scan(/.{1,2}/)
+  temp.each { |pair|
+    if pair[0] == pair[1]
+      encoded_text << pair[0]
+      encoded_text << "x"
+      encoded_text << pair[1]
+    else
+      encoded_text << pair
+    end
+  }
+  # Pad string with "x" if string has odd number of characters.
+  encoded_text << "x" if encoded_text.length % 2 == 1
+
+  # puts encoded_text
+
+  # Create hashmap for each character in array (faster to do once than searching multiple times)
+  key_positions = Hash.new
+  value = ''
+  x = key.length
+  # puts x
+  y = key[0].length
+  # puts y
+  for i in 0...x  
+    for j in 0...y
+      key_positions[key[i][j]] = [i, j]
+    end
+  end
+
+  # puts key_positions
+
+  #puts key_positions
+  # Encipher the input text
+
+  (0...encoded_text.length).step(2) do |k|
+    index1 = key_positions[encoded_text[k]]
+    index2 = key_positions[encoded_text[k+1]]
+    # check for matching row
+    if index1[0] == index2[0]
+      ciphertext << key[index1[0]][(index1[1]+1) % y]
+      ciphertext << key[index2[0]][(index2[1]+1) % y]
+      # print index1[0]
+      # print ","
+      # puts (index1[1]+1) % y
+
+      # print index2[0]
+      # print ","
+      # puts (index2[1]+1) % y
+    # check for matching column
+    elsif index1[1] == index2[1]
+      ciphertext << key[(index1[0]+1) % x][index1[1]]
+      ciphertext << key[(index2[0]+1) % x][index2[1]]
+      
+    # neither row nor column match
+    else
+      ciphertext << key[index1[0]][index2[1]]
+      ciphertext << key[index2[0]][index1[1]]
+      # print index1[0]
+      # print ","
+      # puts index2[1]
+
+      # print index2[0]
+      # print ","
+      # puts index1[1]
+    end
+    
+    
+    # print index1
+    # print ","
+    # print index2
+    # print key[index1[0]][index1[1]+1]
+    # puts " "
+  end
+  return ciphertext
+
+  # mapping = encoded_text.scan(/.{1,2}/)
+  # for mapping.each { |pair|
+  #   for 0..5 { |x| 
+  #     for 0..5 { |y| 
+  #       if pair[0] ==
+  #     }
+  #   }
+  # }
+
+end
+
+
+
+
 # Performs a frequency analysis on a provided string of characters.
 #
 # Calculates the relative frequency of each character in the overall string.
