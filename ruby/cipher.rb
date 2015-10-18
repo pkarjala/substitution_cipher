@@ -230,6 +230,12 @@ def playfair_cipher(key, text)
 end
 
 
+# Performs a Playfair cipher decryption given the key and the ciphertext.
+# 
+# @param key [Array] The 2d array key for the cipher.
+# @param text [String] The ciphertext to be decrypted.
+# 
+# @return The deciphered string of text.
 def playfair_decipher(key, text)
 
   plaintext = ''
@@ -246,15 +252,22 @@ def playfair_decipher(key, text)
   end
 
   (0...text.length).step(2) do |k|
-    index1 = key_positions[encoded_text[k]]
-    index2 = key_positions[encoded_text[k+1]]
+    index1 = key_positions[text[k]]
+    index2 = key_positions[text[k+1]]
     # check for matching row
     if index1[0] == index2[0]
       plaintext << key[index1[0]][(index1[1]-1) % y]
       plaintext << key[index2[0]][(index2[1]-1) % y]
     # check for matching column
     elsif index1[1] == index2[1]
-
+      plaintext << key[(index1[0]-1) % x][index1[1]]
+      plaintext << key[(index2[0]-1) % x][index2[1]]
+    else
+      plaintext << key[index1[0]][index2[1]]
+      plaintext << key[index2[0]][index1[1]]
+    end
+  end
+  return plaintext
 end
 
 
